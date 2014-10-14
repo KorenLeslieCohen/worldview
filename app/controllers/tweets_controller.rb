@@ -7,7 +7,6 @@ class TweetsController < ApplicationController
       config.access_token        = ENV['TWITTER_ACCESS_TOKEN']
       config.access_token_secret = ENV['TWITTER_ACCESS_TOKEN_SECRET']
     end
-     # <City id: 3, name: "London", created_at: "2014-08-13 01:04:48", updated_at: "2014-08-13 01:04:48", bigger_thing: "United Kingdom", lon: -0.45, lat: 51.48, country: "GB">
     
     @city = City.find(params[:location])
     tweets = []
@@ -17,13 +16,13 @@ class TweetsController < ApplicationController
     end
     cityLong = @city.name.gsub(/ /,"")
     bigthingLong = @city.bigger_thing.gsub(/ /,"")
-    
-    tweets.push(@client.search("##{cityLong} -rt", :result_type => "popular", :lang => "en" ).take(10)).flatten!
+    # binding.pry;
+    tweets.push(@client.search("##{cityLong} -rt", :result_type => "popular", :lang => "en" ).take(12)).flatten!
     if tweets.length <12 && cityShort !=nil
-      tweets.push(@client.search("##{cityShort} -rt", :result_type => "popular", :lang => "en" ).take(10)).flatten!
+      tweets.push(@client.search("##{cityShort} -rt", :result_type => "popular", :lang => "en" ).take(12)).flatten!
     end
     if tweets.length <12
-      tweets.push(@client.search("##{bigthingLong} -rt", :result_type => "popular", :lang => "en" ).take(10)).flatten!
+      tweets.push(@client.search("##{bigthingLong} -rt", :result_type => "popular", :lang => "en" ).take(12)).flatten!
     end
     
     render :json => tweets.take(12).to_json

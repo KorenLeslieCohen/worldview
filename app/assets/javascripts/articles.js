@@ -8,11 +8,10 @@ function article (passedCity1) {
 $('.news-header').show();
 $('#news1').empty();
 $('#news2').empty();
-
+ 
 cityName = (passedCity1.name.toLowerCase()).replace(/ /g,"%20");
-biggerthing = (passedCity1.bigger_thing.toLowerCase()).replace(/ /g,"%20"); 
- // "\"New%20York%20City\""
-        
+biggerthing = (passedCity1.bigger_thing.toLowerCase()).replace(/[^\w\s]/gi, '').replace(/ /g,"%20"); 
+
 articleLoop();
    
 }
@@ -128,10 +127,10 @@ function printArticles(){
 
         if (imagesArray.length > 0){
             var image = "http://www.nytimes.com/" + imagesArray[1].url;
-             $('#news1').append("<li class='article' data-id=" + id + "><img src=" + image + "><h3><a target='_blank' href='" + url + "'>" + title + " </a></h3><p>" + pubdate + "</p><p>" + abstract + "</p><button class='save-article'>Read later</button></li>");
+             $('#news1').append("<li class='article' data-id=" + id + "><img src=" + image + "><h3><a target='_blank' href='" + url + "'>" + title + " </a></h3><p>" + pubdate + "</p><p>" + abstract + "</p><button class='save-article'>Save</button></li>");
         } else {
             var image = "no image available"
-             $('#news1').append("<li class='article' data-id=" + id + "><h3><a target='_blank' href='" + url + "'>" + title + " </a></h3><p>" + pubdate + "</p><p>" + abstract + "</p><button class='save-article'>Read later</button></li>");
+             $('#news1').append("<li class='article' data-id=" + id + "><h3><a target='_blank' href='" + url + "'>" + title + " </a></h3><p>" + pubdate + "</p><p>" + abstract + "</p><button class='save-article'>Save</button></li>");
         }
 
         if (loggedIn == true) {
@@ -139,7 +138,7 @@ function printArticles(){
 
             for (var j = 0; j < userArticles.length; j++) {
                 if (url === userArticles[j]) {
-                    $("#news1 :last-child button").last().html("Article saved in dashboard!");
+                    $("#news1 :last-child button").last().html("Saved to Dashboard");
                     $("#news1 :last-child button").last().prop("disabled",true);
                 }
             }
@@ -163,10 +162,10 @@ function printArticles(){
 
             if (imagesArray.length > 0){
                 var image = "http://www.nytimes.com/" + imagesArray[1].url;
-                 $('#news2').append("<li class='article' data-id=" + id + "><img src=" + image + "><h3><a target='_blank' href='" + url + "'>" + title + " </a></h3><p>" + pubdate + "</p><p>" + abstract + "</p><button class='save-article'>Read later</button></li>");
+                 $('#news2').append("<li class='article' data-id=" + id + "><img src=" + image + "><h3><a target='_blank' href='" + url + "'>" + title + " </a></h3><p>" + pubdate + "</p><p>" + abstract + "</p><button class='save-article'>Save</button></li>");
             } else {
                 var image = "no image available"
-                 $('#news2').append("<li class='article' data-id=" + id + "><h3><a target='_blank' href='" + url + "'>" + title + " </a></h3><p>" + pubdate + "</p><p>" + abstract + "</p><button class='save-article'>Read later</button></li>");
+                 $('#news2').append("<li class='article' data-id=" + id + "><h3><a target='_blank' href='" + url + "'>" + title + " </a></h3><p>" + pubdate + "</p><p>" + abstract + "</p><button class='save-article'>Save</button></li>");
             }
 
             if (loggedIn == true) {
@@ -174,7 +173,7 @@ function printArticles(){
 
                 for (var j = 0; j < userArticles.length; j++) {
                     if (url === userArticles[j]) {
-                        $("#news2 :last-child button").last().html("Article saved in dashboard!");
+                        $("#news2 :last-child button").last().html("Saved to Dashboard");
                         $("#news2 :last-child button").last().prop("disabled",true);
                     }
                 }
@@ -221,7 +220,7 @@ $(function () {
             },
             success: function (response) {
                 console.log("Saving article successful.");
-                $that.text("Article saved in dashboard!");
+                $that.text("Saved to Dashboard");
                 $that.prop("disabled",true);
             },
             error: function (response) {

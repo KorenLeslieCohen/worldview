@@ -45,8 +45,7 @@ function submit_new_city(passedInput) {
                 console.log("Successful response and marked as a country, not a city");
                 console.log("response: "+response.RESULTS[i]);
                 return;
-              } else if (response.RESULTS[i].name.match(/(kong international|S.A.R.)/i)) {
-                // $("#invalid_city").text("Please enter a valid city");
+              } else if (response.RESULTS[i].name.match(/(international|hospital|helistop|S\.A\.R|de Olivenca|do Potengi)/i)) {
                 console.log("Successful response and marked as an International airport, not a city");
                 console.log("response: "+response.RESULTS[i].name);
                 console.log("value of i = "+i++);
@@ -56,6 +55,7 @@ function submit_new_city(passedInput) {
                 console.log(response);
                 console.log(response.RESULTS);
                 var cityname = first_result.match(/(\D+)(,\s+)(\D+)/)[1];
+               
                 var bigger_thing = first_result.match(/(\D+)(,\s+)(\D+)/)[3];
                 var lat = response.RESULTS[i].lat;
                 var lon = response.RESULTS[i].lon;
@@ -75,37 +75,41 @@ function submit_new_city(passedInput) {
                 $("#new-city").val("");
                 console.log("finished");
 
-            $.ajax({
-                type: "POST",
-                url: "/cities",
-                data: {
-                    city: {
-                        name: cityArray[0],
-                        bigger_thing: cityArray[1],
-                        lat: cityArray[2],
-                        lon: cityArray[3],
-                        country: cityArray[4],
-                        lastClock: cityArray[5]
+            // if (loggedIn == true) {
+
+                $.ajax({
+                    type: "POST",
+                    url: "/cities",
+                    data: {
+                        city: {
+                            name: cityArray[0],
+                            bigger_thing: cityArray[1],
+                            lat: cityArray[2],
+                            lon: cityArray[3],
+                            country: cityArray[4],
+                            lastClock: cityArray[5]
+                        }
+                    },
+                    success: function (response) {
+                        if (response == "this city already exists") {
+                            $("#invalid_city").text("You're already tracking that city");
+                            console.log("Saving city denied - city is already on page.");
+                        } else {
+                            $("#invalid_city").text(cityArray[0] + ", " + cityArray[1] + " added");
+                            console.log("Saving city successful: " + response);
+                            
+                            makeClock(response);
+
+                        }
+                    },
+                    error: function (response) {
+                        console.log("Saving city failed.");
+                        console.log(response);
                     }
-                },
-                success: function (response) {
-                    if (response == "this city already exists") {
-                        $("#invalid_city").text("You're already tracking that city");
-                        console.log("Saving city denied - city is already on page.");
-                    } else {
-                        $("#invalid_city").text(cityArray[0] + ", " + cityArray[1] + " added");
-                        console.log("Saving city successful: " + response);
-                        makeClock(response);
-                    }
-                },
-                error: function (response) {
-                    console.log("Saving city failed.");
-                    console.log(response);
-                }
-            });
+                });
+            // }
         },
         error: function (response) {
-            // var first_result = response['results'][0]['name']
             console.log("new city form failure: " + response);
             $("#invalid-city").prepend("Not a valid city");
             $("#new-city").val("");
